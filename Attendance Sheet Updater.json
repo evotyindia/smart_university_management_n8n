@@ -1,0 +1,416 @@
+{
+  "name": "Attendance Sheet Updater",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 8
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        0,
+        176
+      ],
+      "id": "fc95c96f-b001-43fa-a868-b0ce70dd0c8b",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        368
+      ],
+      "id": "a909af4b-5b5c-40cb-879e-54b4d1afaf5a",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1FNf6IkEBrZ6oAJ4ZJUf11-9jHeabXoTz2BF3Z9Sr3uc",
+          "mode": "list",
+          "cachedResultName": "Student Database",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1FNf6IkEBrZ6oAJ4ZJUf11-9jHeabXoTz2BF3Z9Sr3uc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "database",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1FNf6IkEBrZ6oAJ4ZJUf11-9jHeabXoTz2BF3Z9Sr3uc/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        224,
+        272
+      ],
+      "id": "bd4cbd82-9abc-4582-b5de-189b0166347c",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "LLU4ZQw3Q1pCPVwB",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const today = new Date().toISOString().split(\"T\")[0];\n\nreturn $input.all().map(item => ({\n  json: {\n    ...item.json,\n    Date: today,\n    AttendanceID: `${today}_${item.json[\"Student ID\"]}`\n  }\n}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        448,
+        272
+      ],
+      "id": "954461a6-3350-41a7-813e-5e4c49032c67",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        672,
+        272
+      ],
+      "id": "7229819a-ac81-47d6-8ff2-e3fe73a2ff26",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1wdh6ZDeGH_RZCspQRazyUTF-IULlTBXmFviJJBr9_lM",
+          "mode": "list",
+          "cachedResultName": "Student Records",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1wdh6ZDeGH_RZCspQRazyUTF-IULlTBXmFviJJBr9_lM/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "asheet",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1wdh6ZDeGH_RZCspQRazyUTF-IULlTBXmFviJJBr9_lM/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Date",
+              "lookupValue": "={{ $json.Date }}"
+            },
+            {
+              "lookupColumn": "Student ID",
+              "lookupValue": "={{ $json['Student ID'] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        896,
+        192
+      ],
+      "id": "07d2d812-59b5-49cb-8fa0-652f49b8572a",
+      "name": "Get row(s) in sheet1",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "LLU4ZQw3Q1pCPVwB",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "1a844059-3dda-436e-90a7-b23d17494710",
+              "leftValue": "={{ $json.row_number !== undefined }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1120,
+        272
+      ],
+      "id": "7d5fe3fd-6816-4ccb-ae39-822079cce3e0",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1wdh6ZDeGH_RZCspQRazyUTF-IULlTBXmFviJJBr9_lM",
+          "mode": "list",
+          "cachedResultName": "Student Records",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1wdh6ZDeGH_RZCspQRazyUTF-IULlTBXmFviJJBr9_lM/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "asheet",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1wdh6ZDeGH_RZCspQRazyUTF-IULlTBXmFviJJBr9_lM/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "email": "={{ $('Loop Over Items').item.json.Email }}",
+            "Attendance ID": "={{ $('Loop Over Items').item.json.AttendanceID }}",
+            "Date": "={{ $('Loop Over Items').item.json.Date }}",
+            "Student ID": "={{ $('Loop Over Items').item.json['Student ID'] }}",
+            "Full Name": "={{ $('Loop Over Items').item.json['Full Name'] }}",
+            "Course": "={{ $('Loop Over Items').item.json.Course }}"
+          },
+          "matchingColumns": [
+            "Attendance ID"
+          ],
+          "schema": [
+            {
+              "id": "Attendance ID",
+              "displayName": "Attendance ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Student ID",
+              "displayName": "Student ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Full Name",
+              "displayName": "Full Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Course",
+              "displayName": "Course",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Attendance",
+              "displayName": "Attendance",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1344,
+        336
+      ],
+      "id": "308432d0-6a38-4871-87eb-532afd61215a",
+      "name": "Append or update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "LLU4ZQw3Q1pCPVwB",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Get row(s) in sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet1": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Append or update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append or update row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "c8aca51a-a701-4a95-b8e9-7b0b3de31f6f",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a8a8aa063f46e6343d217f680bdfe5788e3ba0320afd28a3aca1bd38575d3c6b"
+  },
+  "nodeGroups": [],
+  "id": "TKdEErljrVLLMKFq",
+  "tags": [
+    {
+      "updatedAt": "2026-07-22T11:20:09.459Z",
+      "createdAt": "2026-07-22T11:20:09.459Z",
+      "id": "NuVcbHa4ZUauV6Qz",
+      "name": "IITFINALPROJECT"
+    }
+  ]
+}

@@ -1,0 +1,244 @@
+{
+  "name": "CertificationSystem",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "74a0ab2f-3d0a-406a-9cbc-d193c20acf5b",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1wdh6ZDeGH_RZCspQRazyUTF-IULlTBXmFviJJBr9_lM",
+          "mode": "list",
+          "cachedResultName": "Student Records",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1wdh6ZDeGH_RZCspQRazyUTF-IULlTBXmFviJJBr9_lM/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 437177806,
+          "mode": "list",
+          "cachedResultName": "assignment 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1wdh6ZDeGH_RZCspQRazyUTF-IULlTBXmFviJJBr9_lM/edit#gid=437177806"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        208,
+        0
+      ],
+      "id": "04842831-e2a8-49c3-a323-b6115ad87817",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "LLU4ZQw3Q1pCPVwB",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "3a074dc9-2910-4244-8cbd-ecc4709988f0",
+              "leftValue": "={{ $json.Percentage }}",
+              "rightValue": 0.4,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        416,
+        0
+      ],
+      "id": "a4dde902-ace3-450e-a19e-3f8b4c30f31b",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1FNf6IkEBrZ6oAJ4ZJUf11-9jHeabXoTz2BF3Z9Sr3uc",
+          "mode": "list",
+          "cachedResultName": "Student Database",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1FNf6IkEBrZ6oAJ4ZJUf11-9jHeabXoTz2BF3Z9Sr3uc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "database",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1FNf6IkEBrZ6oAJ4ZJUf11-9jHeabXoTz2BF3Z9Sr3uc/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Email",
+              "lookupValue": "={{ $json.Email }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        624,
+        -16
+      ],
+      "id": "2bf94ff2-06d4-425d-b09f-f520cdc445fb",
+      "name": "Get row(s) in sheet1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "LLU4ZQw3Q1pCPVwB",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.Email }}",
+        "subject": "=Certificate of Completion – {{ $json.course }}",
+        "message": "=<!DOCTYPE html>\n<html>\n<head>\n<meta charset=\"UTF-8\">\n\n<style>\n\nbody {\n    margin: 0;\n    padding: 30px;\n    background: #f3f5f7;\n    font-family: Georgia, \"Times New Roman\", serif;\n}\n\n.certificate {\n    max-width: 900px;\n    margin: auto;\n    background: #ffffff;\n    border: 12px solid #1b5e5a;\n    padding: 10px;\n}\n\n.inner {\n    border: 2px solid #c8a951;\n    padding: 55px 60px;\n    text-align: center;\n}\n\n.university {\n    font-size: 18px;\n    letter-spacing: 4px;\n    color: #1b5e5a;\n    font-weight: bold;\n}\n\n.title {\n    font-size: 42px;\n    margin-top: 25px;\n    color: #222;\n    letter-spacing: 2px;\n}\n\n.subtitle {\n    font-size: 18px;\n    color: #666;\n    margin-top: 10px;\n}\n\n.name {\n    font-size: 38px;\n    font-weight: bold;\n    color: #1b5e5a;\n    margin: 30px 0 15px;\n}\n\n.text {\n    font-size: 17px;\n    color: #444;\n    line-height: 1.7;\n}\n\n.course {\n    font-size: 25px;\n    font-weight: bold;\n    color: #222;\n    margin: 18px 0;\n}\n\n.date {\n    font-size: 16px;\n    color: #555;\n    margin-top: 30px;\n}\n\n.signature {\n    margin-top: 50px;\n    display: inline-block;\n    min-width: 220px;\n    border-top: 1px solid #555;\n    padding-top: 8px;\n    font-size: 14px;\n    color: #444;\n}\n\n.footer {\n    margin-top: 35px;\n    font-size: 11px;\n    color: #888;\n}\n\n</style>\n</head>\n\n<body>\n\n<div class=\"certificate\">\n\n<div class=\"inner\">\n\n<div class=\"university\">\nMOONLIT UNIVERSITY\n</div>\n\n<div class=\"title\">\nCERTIFICATE\n</div>\n\n<div class=\"subtitle\">\nOF COMPLETION\n</div>\n\n<div class=\"text\" style=\"margin-top:35px;\">\nThis certificate is proudly presented to\n</div>\n\n<div class=\"name\">\n{{ $json[\"Full Name\"] }}\n</div>\n\n<div class=\"text\">\nfor successfully completing the course\n</div>\n\n<div class=\"course\">\n{{ $json.Course }}\n</div>\n\n<div class=\"text\">\nwith successful completion of the prescribed academic\nrequirements.\n</div>\n\n<div class=\"date\">\nDate of Completion<br>\n<strong>{{ $today.toFormat('yyyy-MM-dd') }}</strong>\n</div>\n\n<div class=\"signature\">\nAuthorized Academic Authority\n</div>\n\n<div class=\"footer\">\nSmart University Management Platform<br>\nMoonLit University\n</div>\n\n</div>\n\n</div>\n\n</body>\n</html>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        832,
+        -16
+      ],
+      "id": "8c0b4f9c-91d3-43bb-9446-cae6bd1026c1",
+      "name": "Send a message",
+      "webhookId": "3fd55a79-830d-490e-88c0-a48c8043db62",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "25RD2BzXdNeioMeJ",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.Email }}",
+        "subject": "=Course Result – {{ $('Get row(s) in sheet').item.json['Student ID'] }}",
+        "message": "=<!DOCTYPE html>\n<html>\n<head>\n<meta charset=\"UTF-8\">\n\n<style>\nbody {\n    margin: 0;\n    padding: 30px;\n    background: #f4f6f8;\n    font-family: Georgia, \"Times New Roman\", serif;\n}\n\n.container {\n    max-width: 800px;\n    margin: auto;\n    background: #ffffff;\n    border: 10px solid #7a2424;\n    padding: 10px;\n}\n\n.inner {\n    border: 2px solid #c8a951;\n    padding: 60px 50px;\n    text-align: center;\n}\n\n.university {\n    font-size: 18px;\n    letter-spacing: 4px;\n    color: #7a2424;\n    font-weight: bold;\n}\n\n.title {\n    font-size: 38px;\n    margin-top: 30px;\n    color: #333;\n    letter-spacing: 2px;\n}\n\n.subtitle {\n    font-size: 17px;\n    color: #777;\n    margin-top: 10px;\n}\n\n.message {\n    margin-top: 35px;\n    font-size: 17px;\n    color: #555;\n    line-height: 1.7;\n}\n\n.name {\n    font-size: 38px;\n    font-weight: bold;\n    color: #7a2424;\n    margin: 20px 0;\n}\n\n.failure {\n    margin: 35px auto 0;\n    padding: 18px 25px;\n    max-width: 560px;\n    border: 1px solid #d9a5a5;\n    background: #fff5f5;\n    color: #7a2424;\n    font-family: Arial, Helvetica, sans-serif;\n    font-size: 16px;\n    line-height: 1.7;\n}\n\n.footer {\n    margin-top: 45px;\n    font-size: 12px;\n    color: #888;\n    line-height: 1.6;\n}\n</style>\n\n</head>\n\n<body>\n\n<div class=\"container\">\n\n<div class=\"inner\">\n\n<div class=\"university\">\nMOONLIT UNIVERSITY\n</div>\n\n<div class=\"title\">\nCOURSE RESULT\n</div>\n\n<div class=\"subtitle\">\nACADEMIC NOTIFICATION\n</div>\n\n<div class=\"message\">\nThis notification is issued to\n</div>\n\n<div class=\"name\">\n{{ $json.Name }}\n</div>\n\n<div class=\"message\">\nregarding the outcome of the enrolled course.\n</div>\n\n<div class=\"failure\">\n<strong>Course Status: Not Successfully Completed</strong>\n<br><br>\nWe regret to inform you that the requirements for successfully completing this course have not been met.\n<br><br>\nPlease contact your course instructor or the Academic Affairs Office for guidance regarding the next available academic options.\n</div>\n\n<div class=\"footer\">\nAcademic Affairs Office<br>\nMoonLit University<br>\nSmart University Management Platform\n</div>\n\n</div>\n\n</div>\n\n</body>\n</html>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        624,
+        96
+      ],
+      "id": "5a723a3a-cbd8-4538-aa86-53b26218e250",
+      "name": "Send a message1",
+      "webhookId": "9a1a3c69-4fd7-4fe9-8dd4-5677f2251370",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "25RD2BzXdNeioMeJ",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet1": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "f16af135-3bc2-42d7-8f20-541a05b2b107",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a8a8aa063f46e6343d217f680bdfe5788e3ba0320afd28a3aca1bd38575d3c6b"
+  },
+  "nodeGroups": [],
+  "id": "T6FAyAY4DtkYyX3u",
+  "tags": [
+    {
+      "updatedAt": "2026-07-22T11:20:09.459Z",
+      "createdAt": "2026-07-22T11:20:09.459Z",
+      "id": "NuVcbHa4ZUauV6Qz",
+      "name": "IITFINALPROJECT"
+    }
+  ]
+}

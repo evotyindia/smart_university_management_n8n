@@ -1,0 +1,730 @@
+{
+  "name": "Student Registration & Enrollment",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Student Registration Form",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "First Name",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Last Name",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Email Address",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Mobile Number",
+              "fieldType": "number",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Date of Birth",
+              "fieldType": "date",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Gender",
+              "fieldType": "radio",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Male"
+                  },
+                  {
+                    "option": "Female"
+                  },
+                  {
+                    "option": "Non-binary"
+                  },
+                  {
+                    "option": "Prefer not to say"
+                  }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Course",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "BCA"
+                  },
+                  {
+                    "option": "B.Tech"
+                  },
+                  {
+                    "option": "MBA"
+                  },
+                  {
+                    "option": "MCA"
+                  },
+                  {
+                    "option": "BBA"
+                  },
+                  {
+                    "option": "M.Tech"
+                  }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Parent/Guardian Name",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Parent Contact Number",
+              "fieldType": "number",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.6,
+      "position": [
+        0,
+        -112
+      ],
+      "id": "de3a2be5-fc80-4236-a524-1bd198628ef0",
+      "name": "On form submission",
+      "webhookId": "200db9e3-b848-4710-996d-b7300a3e5277"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "86c8a31d-0958-4e26-bd0f-95b21cae899b",
+              "name": "fullName",
+              "value": "={{ $json[\"First Name\"].trim() + \" \" + $json[\"Last Name\"].trim() }}",
+              "type": "string"
+            },
+            {
+              "id": "4f04d760-ef23-435d-bb13-ca2dea5eaabc",
+              "name": "=email",
+              "value": "={{ $json[\"Email Address\"].trim().toLowerCase() }}",
+              "type": "string"
+            },
+            {
+              "id": "392b31b5-d424-4136-8c65-9b3a8d2d9489",
+              "name": "mobile",
+              "value": "={{ $json[\"Mobile Number\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "a90053d2-a72f-4428-9309-3c405a05486f",
+              "name": "dateOfBirth",
+              "value": "={{ $json[\"Date of Birth\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "35ef40f3-624d-44e7-b0de-324ea66992d7",
+              "name": "gender",
+              "value": "={{ $json[\"Gender\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "fb6a1334-46c9-42a1-8482-67b9af63bd2e",
+              "name": "course",
+              "value": "={{ $json.Course }}",
+              "type": "string"
+            },
+            {
+              "id": "b4fa8221-bfb8-4b77-922d-3616300342b6",
+              "name": "parentName",
+              "value": "={{ $json['Parent/Guardian Name'] }}",
+              "type": "string"
+            },
+            {
+              "id": "68193604-4998-47de-9f6a-9ca6b109d2a8",
+              "name": "parentContact",
+              "value": "={{ $json['Parent Contact Number'] }}",
+              "type": "number"
+            },
+            {
+              "id": "191a3c3a-91fb-430e-ad17-69f2fa8ea03b",
+              "name": "registrationDate",
+              "value": "={{ $json[\"submittedAt\"].split(\"T\")[0] }}",
+              "type": "string"
+            },
+            {
+              "id": "fa7c7bed-6d86-4b6a-8f71-3b3e505eb331",
+              "name": "status",
+              "value": "Registered",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": "={{ false }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        224,
+        -112
+      ],
+      "id": "d40ad2a9-18c6-4cbb-ad44-6e5fe7098e4d",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "d4ae7c4e-15ce-45ef-aaf8-8673428dd007",
+              "leftValue": "={{ $json[\"Email\"] !== undefined }}",
+              "rightValue": "false",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        672,
+        -112
+      ],
+      "id": "b90d114b-497d-4575-9e66-b78f09f0f5d1",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1FNf6IkEBrZ6oAJ4ZJUf11-9jHeabXoTz2BF3Z9Sr3uc",
+          "mode": "list",
+          "cachedResultName": "Student Database",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1FNf6IkEBrZ6oAJ4ZJUf11-9jHeabXoTz2BF3Z9Sr3uc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "database",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1FNf6IkEBrZ6oAJ4ZJUf11-9jHeabXoTz2BF3Z9Sr3uc/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Email",
+              "lookupValue": "={{ $json.email }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        448,
+        -112
+      ],
+      "id": "0f8d83c4-4500-4c2e-be66-aee014f3520c",
+      "name": "Sheet",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "LLU4ZQw3Q1pCPVwB",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Edit Fields').item.json.email }}",
+        "subject": "Registration Already Exists - MoonLit University",
+        "emailType": "text",
+        "message": "=Dear {{ $('On form submission').item.json['First Name'] }},\n\nWe noticed that a registration request was submitted using this email address.\n\nOur records show that you are already registered in the Smart University Management Platform.\n\nIf you are trying to update your information or believe this message was sent in error, please contact the University Administration or Admissions Office for assistance.\n\nThank you.\n\nBest Regards,\nAdmissions Office\nSmart University Management Platform\nMoonLit University",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        896,
+        -208
+      ],
+      "id": "c32c54a0-69a1-432f-9fa7-f79d2db2f86c",
+      "name": "Send a message",
+      "webhookId": "37d0cb47-c1e7-4eee-a210-169c1977eb76",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "25RD2BzXdNeioMeJ",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const course = $('Edit Fields').first().json.course.toUpperCase();\n\nconst mobile = String($('Edit Fields').first().json.mobile);\nconst randomph = mobile.slice(0, 2) + mobile.slice(-2);\n\nreturn [\n  {\n    studentId: `Mlit-${course}-${randomph}`\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        896,
+        -16
+      ],
+      "id": "c9ddc5a3-a5db-4805-83f1-9b52e2182790",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "48770cfe-0246-4238-aad8-92a7d1a01b17",
+              "name": "studentld",
+              "value": "={{ $json.studentId }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1120,
+        -16
+      ],
+      "id": "747d962b-c613-4b1b-8a31-d5d244a4cfda",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1FNf6IkEBrZ6oAJ4ZJUf11-9jHeabXoTz2BF3Z9Sr3uc",
+          "mode": "list",
+          "cachedResultName": "Student Database",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1FNf6IkEBrZ6oAJ4ZJUf11-9jHeabXoTz2BF3Z9Sr3uc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "database",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1FNf6IkEBrZ6oAJ4ZJUf11-9jHeabXoTz2BF3Z9Sr3uc/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Student ID": "={{ $json.studentld }}",
+            "Full Name": "={{ $('Edit Fields').item.json.fullName }}",
+            "Email": "={{ $('Edit Fields').item.json.email }}",
+            "Mobile": "={{ $('Edit Fields').item.json.mobile }}",
+            "Course": "={{ $('Edit Fields').item.json.course }}",
+            "Registration Date": "={{ $('Edit Fields').item.json.registrationDate }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Student ID",
+              "displayName": "Student ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Full Name",
+              "displayName": "Full Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Mobile",
+              "displayName": "Mobile",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Course",
+              "displayName": "Course",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Registration Date",
+              "displayName": "Registration Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1344,
+        -16
+      ],
+      "id": "6be8081c-f18a-41f3-95e8-ef101cd64000",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "LLU4ZQw3Q1pCPVwB",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.Email }}",
+        "subject": "Welcome to MoonLit University – Registration Successful",
+        "emailType": "text",
+        "message": "=Dear {{ $('On form submission').item.json['First Name'] }},\n\nCongratulations!\n\nYour registration has been completed successfully.\n\nYour Student ID (Roll Number): {{ $json['Student ID'] }}\n\nYour registration details are:\n\nName: {{ $('Edit Fields').item.json.fullName }}\nCourse: {{ $('Edit Fields').item.json.course }}\n\nPlease keep your Student ID safe, as it will be required for attendance, assignments, examinations, result publication, and all future academic activities.\n\nIf any of the above information is incorrect, please contact the University Admissions Office.\n\nWe wish you a successful academic journey and warmly welcome you to the Smart University Management Platform.\n\nBest Regards,\n\nAdmissions Office\nSmart University Management Platform\nMoonLit University",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1568,
+        80
+      ],
+      "id": "8a3c16f7-8f8a-4197-a68c-2757303087ef",
+      "name": "Send a message1",
+      "webhookId": "e132f2b0-2d3e-4d5f-839d-31900cf3cbe7",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "25RD2BzXdNeioMeJ",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "folder",
+        "name": "={{ $json['Student ID'] }} - {{ $('On form submission').item.json['First Name'] }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1_s3FYk1RRxgytP3gCu0o9XEVHR_IqdHh",
+          "mode": "list",
+          "cachedResultName": "Student Database",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1_s3FYk1RRxgytP3gCu0o9XEVHR_IqdHh"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1568,
+        -112
+      ],
+      "id": "76f5b0d6-83e2-4b0d-9c3e-d57b66a74cce",
+      "name": "Create folder",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "kevPlMBtkAycWWoY",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1FNf6IkEBrZ6oAJ4ZJUf11-9jHeabXoTz2BF3Z9Sr3uc",
+          "mode": "list",
+          "cachedResultName": "Student Database",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1FNf6IkEBrZ6oAJ4ZJUf11-9jHeabXoTz2BF3Z9Sr3uc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "database",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1FNf6IkEBrZ6oAJ4ZJUf11-9jHeabXoTz2BF3Z9Sr3uc/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "driveID": "={{ $json.id }}",
+            "Student ID": "={{ $('Append row in sheet').item.json['Student ID'] }}"
+          },
+          "matchingColumns": [
+            "Student ID"
+          ],
+          "schema": [
+            {
+              "id": "Student ID",
+              "displayName": "Student ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Full Name",
+              "displayName": "Full Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Mobile",
+              "displayName": "Mobile",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Course",
+              "displayName": "Course",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Registration Date",
+              "displayName": "Registration Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "driveID",
+              "displayName": "driveID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1776,
+        -160
+      ],
+      "id": "0f7a13ca-4035-446e-935c-2750764a442d",
+      "name": "Update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "LLU4ZQw3Q1pCPVwB",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sheet": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Create folder",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send a message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create folder": {
+      "main": [
+        [
+          {
+            "node": "Update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "26a6d988-b7d8-445c-956b-996a8ba83ddf",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a8a8aa063f46e6343d217f680bdfe5788e3ba0320afd28a3aca1bd38575d3c6b"
+  },
+  "nodeGroups": [],
+  "id": "SukZ1zYcfS0voeS5",
+  "tags": [
+    {
+      "updatedAt": "2026-07-22T11:20:09.459Z",
+      "createdAt": "2026-07-22T11:20:09.459Z",
+      "id": "NuVcbHa4ZUauV6Qz",
+      "name": "IITFINALPROJECT"
+    }
+  ]
+}

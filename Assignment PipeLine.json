@@ -1,0 +1,1126 @@
+{
+  "name": "Assignment PipeLine",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Assignment Submission - 1",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Student ID",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Name",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Registered Email",
+              "fieldType": "email",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Explain the process of photosynthesis. - 5marks",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Describe the structure and functions of DNA. - 5marks",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Explain the human circulatory system.",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "What is natural selection? Explain Darwin's theory of evolution with an example.",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Describe the process of mitosis.",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.6,
+      "position": [
+        0,
+        352
+      ],
+      "id": "c3f47850-4f52-410e-971a-58831c18ce85",
+      "name": "On form submission",
+      "webhookId": "2e0145b5-b9dd-4cff-8e03-954d7ff2d0a6"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1FNf6IkEBrZ6oAJ4ZJUf11-9jHeabXoTz2BF3Z9Sr3uc",
+          "mode": "list",
+          "cachedResultName": "Student Database",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1FNf6IkEBrZ6oAJ4ZJUf11-9jHeabXoTz2BF3Z9Sr3uc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "database",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1FNf6IkEBrZ6oAJ4ZJUf11-9jHeabXoTz2BF3Z9Sr3uc/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Email",
+              "lookupValue": "={{ $json['Registered Email'] }}"
+            },
+            {
+              "lookupColumn": "Student ID",
+              "lookupValue": "={{ $json['Student ID'] }}"
+            }
+          ]
+        },
+        "combineFilters": "OR",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        224,
+        352
+      ],
+      "id": "883b0031-28cc-44ff-b3ba-0d701bc252e8",
+      "name": "Get row(s) in sheet",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "LLU4ZQw3Q1pCPVwB",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "f7ee6243-d950-4e79-be71-e87867e97d3c",
+              "leftValue": "={{ $json.Email !== undefined }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        448,
+        352
+      ],
+      "id": "d8aac2f5-7447-4b79-89dd-86ca1a874ef9",
+      "name": "If",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('On form submission').item.json['Registered Email'] }}",
+        "subject": "Assignment Submission Failed – Student Verification Required",
+        "emailType": "text",
+        "message": "=Dear Student,\n\nWe were unable to process your assignment submission because your details could not be verified in the Smart University Management Platform.\n\nVerification Details\n-------------------------------\nEmail Address : {{ $('On form submission').item.json['Registered Email'] }}\nStudent ID    : {{ $('On form submission').item.json['Student ID'] }}\nStatus        : Verification Failed\n-------------------------------\n\nThe provided Email Address and Student ID do not match any registered student record in our database.\n\nPlease verify that:\n• Your registered email address is entered correctly.\n• Your Student ID is correct.\n• You have completed the student registration process.\n\nIf you have recently registered and still receive this message, please contact the University Administration or Admissions Office for assistance.\n\nYour assignment has not been submitted.\n\nRegards,\n\nAcademic Affairs Office\nSmart University Management Platform\nMoonLit University",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        672,
+        448
+      ],
+      "id": "63efc2c5-60c8-4561-8fa4-895d24679809",
+      "name": "Send a message",
+      "webhookId": "2e5debd3-6b92-4440-b874-f130781e9f7a",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "25RD2BzXdNeioMeJ",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1wdh6ZDeGH_RZCspQRazyUTF-IULlTBXmFviJJBr9_lM",
+          "mode": "list",
+          "cachedResultName": "Student Records",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1wdh6ZDeGH_RZCspQRazyUTF-IULlTBXmFviJJBr9_lM/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 437177806,
+          "mode": "list",
+          "cachedResultName": "assignment 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1wdh6ZDeGH_RZCspQRazyUTF-IULlTBXmFviJJBr9_lM/edit#gid=437177806"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Email",
+              "lookupValue": "={{ $json.Email }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        672,
+        256
+      ],
+      "id": "c70debe9-9d84-48c2-bd42-1986dfcb68a1",
+      "name": "Get row(s) in sheet1",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "LLU4ZQw3Q1pCPVwB",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "bbfb2902-b3bf-4cb4-a395-2607d4397421",
+              "leftValue": "={{ $json.Email !== undefined }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        896,
+        256
+      ],
+      "id": "40b80123-3000-4a6d-8d39-15be855ed98d",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('If').item.json.Email }}",
+        "subject": "Assignment Submission Rejected – Assignment Already Submitted",
+        "emailType": "text",
+        "message": "=Dear {{ $('If').item.json['Full Name'] }},\n\nOur records indicate that you have already submitted this assignment.\n\nSubmission Details\n----------------------------------\nStudent ID      : {{ $('If').item.json['Student ID'] }}\nStudent Name    : {{ $('If').item.json['Full Name'] }}\nStatus          : Already Submitted\n----------------------------------\n\nAs per university policy, only one submission is allowed for each assignment. Therefore, your new submission has not been accepted.\n\nIf you believe this is an error or have been instructed by your faculty to resubmit the assignment, please contact your course instructor or the Academic Office.\n\nThank you for your cooperation.\n\nRegards,\n\nAcademic Affairs Office\nSmart University Management Platform\nMoonLit University",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1264,
+        656
+      ],
+      "id": "1303ab23-2117-4db0-9a3a-1b4c35f31116",
+      "name": "Send a message1",
+      "webhookId": "10c221ff-5c7a-43df-8b42-420f8ce9aedc",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "25RD2BzXdNeioMeJ",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('If').item.json.Email }}",
+        "subject": "Assignment 1 Evaluation Completed - MoonLit University",
+        "emailType": "text",
+        "message": "=Dear {{ $('If').item.json['Full Name'] }},\n\nGreetings from MoonLit University!\n\nYour Biology assignment has been successfully evaluated by the Smart University Management Platform. Below is the detailed evaluation of your submission.\n\n==================================================\nASSIGNMENT EVALUATION SUMMARY\n=============================\n\nStudent Name    : {{ $('If').item.json['Full Name'] }}\nStudent ID      : {{ $('If').item.json['Student ID'] }}\nEmail           : {{ $('If').item.json.Email }}\nCourse          : {{ $('If').item.json.Course }}\nAssignment      : Biology Assignment\nSubmission Date : {{ $('On form submission').item.json.submittedAt }}\n\n---\n\nTotal Marks     : {{ $json.output.properties.total.type }}\nPercentage      : {{ $json.output.properties.percentage.type }}%\nGrade           : {{ $json.output.properties.grade.type }}\nAI Confidence   : {{ $json.output.properties.confidence.type }}%\n------------------------------------------------------------------------\n\n==================================================\nQUESTION-WISE EVALUATION\n========================\n\nQuestion 1 (5 Marks)\n\nQuestion:\nExplain the process of photosynthesis.\n\nMarks Awarded:\n{{ $json.output.properties.question1.properties.marks.type }}/5\n\nExpected Answer:\n{{ $json.output.properties.question1.properties.expectedAnswer.type }}\n\nFeedback:\n{{ $json.output.properties.question1.properties.feedback.type }}\n\n---\n\nQuestion 2 (5 Marks)\n\nQuestion:\nDescribe the structure and functions of DNA.\n\nMarks Awarded:\n{{ $json.output.properties.question2.properties.marks.type }}/5\n\nExpected Answer:\n{{ $json.output.properties.question2.properties.expectedAnswer.type }}\n\nFeedback:\n{{ $json.output.properties.question2.properties.feedback.type }}\n\n---\n\nQuestion 3 (5 Marks)\n\nQuestion:\nExplain the human circulatory system.\n\nMarks Awarded:\n{{ $json.output.properties.question3.properties.marks.type }}/5\n\nExpected Answer:\n{{ $json.output.properties.question3.properties.expectedAnswer.type }}\n\nFeedback:\n{{ $json.output.properties.question3.properties.feedback.type }}\n\n---\n\nQuestion 4 (5 Marks)\n\nQuestion:\nWhat is natural selection? Explain Darwin's theory of evolution with an example.\n\nMarks Awarded:\n{{ $json.output.properties.question4.properties.marks.type }}/5\n\nExpected Answer:\n{{ $json.output.properties.question4.properties.expectedAnswer.type }}\n\nFeedback:\n{{ $json.output.properties.question4.properties.feedback.type }}\n\n---\n\nQuestion 5 (5 Marks)\n\nQuestion:\nDescribe the process of mitosis.\n\nMarks Awarded:\n{{ $json.output.properties.question5.properties.marks.type }}/5\n\nExpected Answer:\n{{ $json.output.properties.question5.properties.expectedAnswer.type }}\n\nFeedback:\n{{ $json.output.properties.question5.properties.feedback.type }}\n==================================================\nOVERALL PERFORMANCE\n===================\n\n{{ $json.output.properties.overallSummary.type }}\n\n---\n\n## STRENGTHS\n\n{{ $json.output.properties.strengths.items.type }}\n\n---\n\n## AREAS FOR IMPROVEMENT\n{{ $json.output.properties.improvements.items.type }}\n\n==================================================\nFINAL REMARKS\n=============\n\nThank you for submitting your assignment. We encourage you to review the evaluation carefully and use the feedback to strengthen your understanding of the subject and improve future submissions.\n\n==================================================\nSUPPORT\n=======\n\nIf you have any questions regarding your evaluation or believe there has been an error in the assessment, please contact the Academic Affairs Office.\n\nEmail: [support@moonlituniversity.edu](mailto:support@moonlituniversity.edu)\nPhone: +91-1800-000-0000\nOffice Hours: Monday to Friday | 9:00 AM – 5:00 PM (IST)\n\nBest Regards,\n\nAcademic Affairs Office\nMoonLit University\nSmart University Management Platform\nMoonLit University\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1616,
+        160
+      ],
+      "id": "f40da0f9-d4e2-4ce5-a3a9-74a5cd8c5694",
+      "name": "Send a message2",
+      "webhookId": "e3dee894-ba96-43b9-b145-c4ed1287613f",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "25RD2BzXdNeioMeJ",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "toText",
+        "sourceProperty": "assigmentfile",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        1616,
+        -144
+      ],
+      "id": "0e66bc6c-345b-4627-81c2-c8648aa5db22",
+      "name": "Convert to File"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "53e9ee36-bcf5-4513-a9eb-9b7ba2a8f355",
+              "name": "assigmentfile",
+              "value": "===========================================================\n        SMART UNIVERSITY MANAGEMENT PLATFORM\n            Assignment Submission Report\n==========================================================\n\nStudent Information\n----------------------------------------------------------\n\nStudent Name        : {{ $('If').item.json['Full Name'] }}\nStudent ID          : {{ $('If').item.json['Student ID'] }}\nEmail               : {{ $('If').item.json.Email }}\nSubmission Date     : {{ $('On form submission').item.json.submittedAt }}\n\n==========================================================\nQuestion 1 (5 Marks)\n==========================================================\n\nQuestion:\nExplain the process of photosynthesis.\n\nStudent Answer:\n\n{{ $('On form submission').item.json['Explain the process of photosynthesis. - 5marks'] }}\n\n----------------------------------------------------------\n\nQuestion 2 (5 Marks)\n\nQuestion:\nDescribe the structure and functions of DNA.\n\nStudent Answer:\n\n{{ $('On form submission').item.json['Describe the structure and functions of DNA. - 5marks'] }}\n\n----------------------------------------------------------\n\nQuestion 3\n\nQuestion:\nExplain the human circulatory system.\n\nStudent Answer:\n\n{{ $('On form submission').item.json['Explain the human circulatory system.'] }}\n\n----------------------------------------------------------\n\nQuestion 4\n\nQuestion:\nWhat is natural selection? Explain Darwin's theory of evolution with an example.\n\nStudent Answer:\n\n{{ $('On form submission').item.json[\"What is natural selection? Explain Darwin's theory of evolution with an example.\"] }}\n\n----------------------------------------------------------\n\nQuestion 5\n\nQuestion:\nDescribe the process of mitosis.\n\nStudent Answer:\n\n{{ $('On form submission').item.json['Describe the process of mitosis.'] }}\n\n==========================================================\n\nGenerated by:\nSmart University Management Platform\n\nThis document is an official record of the student's\nassignment submission.\n\n==========================================================",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1264,
+        -144
+      ],
+      "id": "ab7be25e-189d-4c75-912d-60b23b5c1ecf",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "operation": "toText",
+        "sourceProperty": "assigmentresult",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        1840,
+        352
+      ],
+      "id": "0e6013af-4c6c-48cc-867e-6e46207f0a4b",
+      "name": "Convert to File1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "53e9ee36-bcf5-4513-a9eb-9b7ba2a8f355",
+              "name": "assigmentresult",
+              "value": "===============================================================\nMOONLIT UNIVERSITY\nSMART UNIVERSITY MANAGEMENT PLATFORM\nASSIGNMENT EVALUATION REPORT\n============================\n\n## Student Information\n\nStudent Name      : {{ $('If').item.json['Full Name'] }}\nStudent ID        : {{ $('If').item.json['Student ID'] }}\nEmail             : {{ $('If').item.json.Email }}\nCourse            : {{ $('If').item.json.Course }}\nAssignment        : Biology Assignment\nSubmission Date   : {{ $('On form submission').item.json.submittedAt }}\n\n==============================================================\nEVALUATION SUMMARY\n==================\n\nTotal Marks       : {{ $json.output.properties.total.type }}/25\nPercentage        : {{ $json.output.properties.percentage.type }} %\nGrade             : {{ $json.output.properties.grade.type }}\nAI Confidence     : {{ $json.output.properties.confidence.type }}%\n\n==============================================================\nQUESTION 1 (5 Marks)\n====================\n\nQuestion:\nExplain the process of photosynthesis.\n\nMarks Awarded:\n{{ $json.output.properties.question1.properties.marks.type }}/5\n\nExpected Answer:\n{{ $json.output.properties.question1.properties.expectedAnswer.type }}\n\n\nFeedback:\n{{ $json.output.properties.question1.properties.feedback.type }}\n\n==============================================================\nQUESTION 2 (5 Marks)\n====================\n\nQuestion:\nDescribe the structure and functions of DNA.\n\nMarks Awarded:\n{{ $json.output.properties.question2.properties.marks.type }}/5\n\nExpected Answer:\n{{ $json.output.properties.question2.properties.expectedAnswer.type }}\n\nFeedback:\n{{ $json.output.properties.question2.properties.feedback.type }}\n\n==============================================================\nQUESTION 3 (5 Marks)\n====================\n\nQuestion:\nExplain the human circulatory system.\n\nMarks Awarded:\n{{ $json.output.properties.question3.properties.marks.type }}/5\n\nExpected Answer:\n{{ $json.output.properties.question3.properties.expectedAnswer.type }}\n\nFeedback:\n{{ $json.output.properties.question3.properties.feedback.type }}\n\n==============================================================\nQUESTION 4 (5 Marks)\n====================\n\nQuestion:\nWhat is natural selection? Explain Darwin's theory of evolution with an example.\n\nMarks Awarded:\n{{ $json.output.properties.question4.properties.marks.type }}/5\n\nExpected Answer:\n{{ $json.output.properties.question4.properties.expectedAnswer.type }}\n\nFeedback:\n{{ $json.output.properties.question4.properties.feedback.type }}\n\n==============================================================\nQUESTION 5 (5 Marks)\n====================\n\nQuestion:\nDescribe the process of mitosis.\n\nMarks Awarded:\n{{ $json.output.properties.question5.properties.marks.type }}/5\n\nExpected Answer:\n{{ $json.output.properties.question5.properties.expectedAnswer.type }}\n\nFeedback:\n{{ $json.output.properties.question5.properties.feedback.type }}\n\n==============================================================\nOVERALL PERFORMANCE\n===================\n\n{{ $json.output.properties.overallSummary.type }}\n\n==============================================================\nACADEMIC NOTE\n=============\n\nThis evaluation has been generated automatically by the Smart\nUniversity Management Platform using AI-assisted assessment.\nStudents are encouraged to review the feedback carefully and\nconsult their course instructor if they require further\nclarification regarding the evaluation.\n\n==============================================================\nSUPPORT INFORMATION\n===================\n\nAcademic Affairs Office\nMoonLit University\n\nEmail        : [support@moonlituniversity.edu](mailto:support@moonlituniversity.edu)\nPhone        : +91-1800-000-0000\nOffice Hours : Monday – Friday\n09:00 AM – 05:00 PM (IST)\n\n==============================================================\nEND OF REPORT\n=============\n\nGenerated by:\nSmart University Management Platform\nMoonLit University\n\nThis document is electronically generated and does not require\na physical signature.\n",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1616,
+        352
+      ],
+      "id": "e97d6872-ad0b-4b09-adc1-6e0207a26c7f",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "name": "=assignment 1 -  {{ $('If').item.json['Student ID'] }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "={{ $('If').item.json.driveID }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1840,
+        -144
+      ],
+      "id": "f49a428a-53b5-46d4-b6ca-dfb7872d54d3",
+      "name": "assignment",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "kevPlMBtkAycWWoY",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "name": "=assignment 1 -  {{ $('If').item.json['Student ID'] }} - report",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "={{ $('If').item.json.driveID }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        2064,
+        352
+      ],
+      "id": "9a8bdce2-6302-419d-a3f4-966a48333eca",
+      "name": "assignment - report",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "kevPlMBtkAycWWoY",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1wdh6ZDeGH_RZCspQRazyUTF-IULlTBXmFviJJBr9_lM",
+          "mode": "list",
+          "cachedResultName": "Student Records",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1wdh6ZDeGH_RZCspQRazyUTF-IULlTBXmFviJJBr9_lM/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 437177806,
+          "mode": "list",
+          "cachedResultName": "assignment 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1wdh6ZDeGH_RZCspQRazyUTF-IULlTBXmFviJJBr9_lM/edit#gid=437177806"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Student ID": "={{ $('If').item.json['Student ID'] }}",
+            "Assignment Link": "={{ $json.webViewLink }}",
+            "Result Report": "=",
+            "Percentage": "=",
+            "Name": "={{ $('If').item.json['Full Name'] }}",
+            "Email": "={{ $('If').item.json.Email }}"
+          },
+          "matchingColumns": [
+            "Student ID"
+          ],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Student ID",
+              "displayName": "Student ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Assignment Link",
+              "displayName": "Assignment Link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Percentage",
+              "displayName": "Percentage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Result Report",
+              "displayName": "Result Report",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        2064,
+        -144
+      ],
+      "id": "9334d598-7ccb-400a-9eb1-d9643c9037ba",
+      "name": "Append or update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "LLU4ZQw3Q1pCPVwB",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1wdh6ZDeGH_RZCspQRazyUTF-IULlTBXmFviJJBr9_lM",
+          "mode": "list",
+          "cachedResultName": "Student Records",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1wdh6ZDeGH_RZCspQRazyUTF-IULlTBXmFviJJBr9_lM/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 437177806,
+          "mode": "list",
+          "cachedResultName": "assignment 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1wdh6ZDeGH_RZCspQRazyUTF-IULlTBXmFviJJBr9_lM/edit#gid=437177806"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Student ID": "={{ $('If').item.json['Student ID'] }}",
+            "Result Report": "={{ $json.webViewLink }}",
+            "Percentage": "={{ $('Basic LLM Chain').item.json.output.properties.percentage.type }}"
+          },
+          "matchingColumns": [
+            "Student ID"
+          ],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Student ID",
+              "displayName": "Student ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Assignment Link",
+              "displayName": "Assignment Link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Percentage",
+              "displayName": "Percentage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Result Report",
+              "displayName": "Result Report",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        2288,
+        352
+      ],
+      "id": "1d8f1551-c26e-442d-b100-5fb7ee1c5844",
+      "name": "Append or update row in sheet1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "LLU4ZQw3Q1pCPVwB",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1FNf6IkEBrZ6oAJ4ZJUf11-9jHeabXoTz2BF3Z9Sr3uc",
+          "mode": "list",
+          "cachedResultName": "Student Database",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1FNf6IkEBrZ6oAJ4ZJUf11-9jHeabXoTz2BF3Z9Sr3uc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "database",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1FNf6IkEBrZ6oAJ4ZJUf11-9jHeabXoTz2BF3Z9Sr3uc/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "assignment 1": "={{ $json.Percentage }}",
+            "Student ID": "={{ $json['Student ID'] }}"
+          },
+          "matchingColumns": [
+            "Student ID"
+          ],
+          "schema": [
+            {
+              "id": "Student ID",
+              "displayName": "Student ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Full Name",
+              "displayName": "Full Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Mobile",
+              "displayName": "Mobile",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Course",
+              "displayName": "Course",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Registration Date",
+              "displayName": "Registration Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "driveID",
+              "displayName": "driveID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "assignment 1",
+              "displayName": "assignment 1",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        2512,
+        352
+      ],
+      "id": "09021718-dd94-4a0f-90e8-b694d00b7976",
+      "name": "Append or update row in sheet2",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "LLU4ZQw3Q1pCPVwB",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "models/gemini-3-flash-preview"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Evaluate the following Biology assignment.\n\nStudent Information\n\nName:\n{{ $('If').item.json['Full Name'] }}\n\nStudent ID:\n{{ $('If').item.json['Student ID'] }}\n\nEmail:\n{{ $('If').item.json.Email }}\n\nSubmission Time:\n{{ $('On form submission').item.json.submittedAt }}\n\n--------------------------------------------------\n\nQuestion 1 (5 Marks)\n\nExplain the process of photosynthesis.\n\nStudent Answer:\n\n{{ $('On form submission').item.json['Explain the process of photosynthesis. - 5marks'] }}\n\n--------------------------------------------------\n\nQuestion 2 (5 Marks)\n\nDescribe the structure and functions of DNA.\n\nStudent Answer:\n\n{{ $('On form submission').item.json['Describe the structure and functions of DNA. - 5marks'] }}\n\n--------------------------------------------------\n\nQuestion 3 (5 Marks)\n\nExplain the human circulatory system.\n\nStudent Answer:\n\n{{ $('On form submission').item.json['Explain the human circulatory system.'] }}\n\n--------------------------------------------------\n\nQuestion 4 (5 Marks)\n\nWhat is natural selection? Explain Darwin's theory of evolution with an example.\n\nStudent Answer:\n\n{{ $('On form submission').item.json[\"What is natural selection? Explain Darwin's theory of evolution with an example.\"] }}\n\n--------------------------------------------------\n\nQuestion 5 (5 Marks)\n\nDescribe the process of mitosis.\n\nStudent Answer:\n\n{{ $('On form submission').item.json['Describe the process of mitosis.'] }}"
+            }
+          ]
+        },
+        "jsonOutput": true,
+        "builtInTools": {},
+        "options": {
+          "systemMessage": "You are an experienced university Biology professor and examiner.  Your responsibility is to evaluate student assignments fairly, accurately, and consistently.  Instructions:  1. There are exactly 5 questions. 2. Each question carries 5 marks. 3. Maximum marks = 25. 4. Evaluate each answer independently. 5. Award marks between 0 and 5. 6. Be strict but fair. 7. Consider:    • Scientific accuracy    • Completeness    • Explanation quality    • Correct terminology    • Logical presentation    • Relevant examples  For every question provide:  • Marks (0–5) • Expected Answer (concise model answer) • Feedback (2–3 sentences explaining why marks were awarded)  After evaluating all questions, generate:  • Total Marks (/25) • Percentage • Grade • Overall Summary (4–6 sentences) • Three strengths • Three areas for improvement • AI confidence score (0–100)  Grading Scale  90–100 : A+ 80–89  : A 70–79  : B+ 60–69  : B 50–59  : C Below 50 : F  Important Rules:  • Never invent marks beyond the allowed range. • Percentage must equal (Total Marks / 25) × 100. • Grade must match the grading scale. • Feedback must be constructive. • Expected answers should be concise and scientifically correct. • Return ONLY valid JSON. • Do not include markdown, code blocks, or additional text."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        880
+      ],
+      "id": "a6717036-6c9e-42e1-a512-e03c2eb0526c",
+      "name": "Message a model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "FUYB4mkl7eqW4wq7",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Evaluate the following Biology assignment.  Student Information  Name: {{ $('If').item.json['Full Name'] }}  Student ID: {{ $('If').item.json['Student ID'] }}  Email: {{ $('If').item.json.Email }}  Submission Time: {{ $('On form submission').item.json.submittedAt }}  --------------------------------------------------  Question 1 (5 Marks)  Explain the process of photosynthesis.  Student Answer:  {{ $('On form submission').item.json['Explain the process of photosynthesis. - 5marks'] }}  --------------------------------------------------  Question 2 (5 Marks)  Describe the structure and functions of DNA.  Student Answer:  {{ $('On form submission').item.json['Describe the structure and functions of DNA. - 5marks'] }}  --------------------------------------------------  Question 3 (5 Marks)  Explain the human circulatory system.  Student Answer:  {{ $('On form submission').item.json['Explain the human circulatory system.'] }}  --------------------------------------------------  Question 4 (5 Marks)  What is natural selection? Explain Darwin's theory of evolution with an example.  Student Answer:  {{ $('On form submission').item.json[\"What is natural selection? Explain Darwin's theory of evolution with an example.\"] }}  --------------------------------------------------  Question 5 (5 Marks)  Describe the process of mitosis.  Student Answer:  {{ $('On form submission').item.json['Describe the process of mitosis.'] }}",
+        "hasOutputParser": true,
+        "messages": {
+          "messageValues": [
+            {
+              "message": "You are an experienced university Biology professor and examiner.  Your responsibility is to evaluate student assignments fairly, accurately, and consistently.  Instructions:  1. There are exactly 5 questions. 2. Each question carries 5 marks. 3. Maximum marks = 25. 4. Evaluate each answer independently. 5. Award marks between 0 and 5. 6. Be strict but fair. 7. Consider:    • Scientific accuracy    • Completeness    • Explanation quality    • Correct terminology    • Logical presentation    • Relevant examples  For every question provide:  • Marks (0–5) • Expected Answer (concise model answer) • Feedback (2–3 sentences explaining why marks were awarded)  After evaluating all questions, generate:  • Total Marks (/25) • Percentage • Grade • Overall Summary (4–6 sentences) • Three strengths • Three areas for improvement • AI confidence score (0–100)  Grading Scale  90–100 : A+ 80–89  : A 70–79  : B+ 60–69  : B 50–59  : C Below 50 : F  Important Rules:  • Never invent marks beyond the allowed range. • Percentage must equal (Total Marks / 25) × 100. • Grade must match the grading scale. • Feedback must be constructive. • Expected answers should be concise and scientifically correct. • Return ONLY valid JSON. • Do not include markdown, code blocks, or additional text."
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        1152,
+        48
+      ],
+      "id": "f2f9dfc3-091c-4757-99bc-e52f223c9d25",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        1120,
+        272
+      ],
+      "id": "5cf43c8b-ff99-4e6a-b873-789e35840a9b",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "FUYB4mkl7eqW4wq7",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"question1\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"marks\": {\n          \"type\": \"integer\"\n        },\n        \"expectedAnswer\": {\n          \"type\": \"string\"\n        },\n        \"feedback\": {\n          \"type\": \"string\"\n        }\n      },\n      \"required\": [\n        \"marks\",\n        \"expectedAnswer\",\n        \"feedback\"\n      ],\n      \"additionalProperties\": false\n    },\n    \"question2\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"marks\": {\n          \"type\": \"integer\"\n        },\n        \"expectedAnswer\": {\n          \"type\": \"string\"\n        },\n        \"feedback\": {\n          \"type\": \"string\"\n        }\n      },\n      \"required\": [\n        \"marks\",\n        \"expectedAnswer\",\n        \"feedback\"\n      ],\n      \"additionalProperties\": false\n    },\n    \"question3\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"marks\": {\n          \"type\": \"integer\"\n        },\n        \"expectedAnswer\": {\n          \"type\": \"string\"\n        },\n        \"feedback\": {\n          \"type\": \"string\"\n        }\n      },\n      \"required\": [\n        \"marks\",\n        \"expectedAnswer\",\n        \"feedback\"\n      ],\n      \"additionalProperties\": false\n    },\n    \"question4\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"marks\": {\n          \"type\": \"integer\"\n        },\n        \"expectedAnswer\": {\n          \"type\": \"string\"\n        },\n        \"feedback\": {\n          \"type\": \"string\"\n        }\n      },\n      \"required\": [\n        \"marks\",\n        \"expectedAnswer\",\n        \"feedback\"\n      ],\n      \"additionalProperties\": false\n    },\n    \"question5\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"marks\": {\n          \"type\": \"integer\"\n        },\n        \"expectedAnswer\": {\n          \"type\": \"string\"\n        },\n        \"feedback\": {\n          \"type\": \"string\"\n        }\n      },\n      \"required\": [\n        \"marks\",\n        \"expectedAnswer\",\n        \"feedback\"\n      ],\n      \"additionalProperties\": false\n    },\n    \"total\": {\n      \"type\": \"integer\"\n    },\n    \"percentage\": {\n      \"type\": \"number\"\n    },\n    \"grade\": {\n      \"type\": \"string\"\n    },\n    \"overallSummary\": {\n      \"type\": \"string\"\n    },\n    \"strengths\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"string\"\n      }\n    },\n    \"improvements\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"string\"\n      }\n    },\n    \"confidence\": {\n      \"type\": \"integer\"\n    }\n  },\n  \"required\": [\n    \"question1\",\n    \"question2\",\n    \"question3\",\n    \"question4\",\n    \"question5\",\n    \"total\",\n    \"percentage\",\n    \"grade\",\n    \"overallSummary\",\n    \"strengths\",\n    \"improvements\",\n    \"confidence\"\n  ],\n  \"additionalProperties\": false\n}",
+        "autoFix": true,
+        "customizeRetryPrompt": true
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        1248,
+        272
+      ],
+      "id": "1de5a097-c1e7-4b9c-96a2-7f26e7f259c8",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        1328,
+        480
+      ],
+      "id": "88689ce1-bf2d-44b0-86a2-515eb9ee2532",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "1j9oQu78EQedWtei",
+          "name": "Groq account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet1": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File": {
+      "main": [
+        [
+          {
+            "node": "assignment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File1": {
+      "main": [
+        [
+          {
+            "node": "assignment - report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Convert to File1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "assignment": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "assignment - report": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append or update row in sheet1": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        []
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Send a message2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Structured Output Parser",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "527c0569-f1f2-4974-8489-3b1e65e8fc27",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a8a8aa063f46e6343d217f680bdfe5788e3ba0320afd28a3aca1bd38575d3c6b"
+  },
+  "nodeGroups": [],
+  "id": "QjIw3NP9tEvepW3p",
+  "tags": [
+    {
+      "updatedAt": "2026-07-22T11:20:09.459Z",
+      "createdAt": "2026-07-22T11:20:09.459Z",
+      "id": "NuVcbHa4ZUauV6Qz",
+      "name": "IITFINALPROJECT"
+    }
+  ]
+}
