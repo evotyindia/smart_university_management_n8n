@@ -25,15 +25,15 @@ This repo packages those workflows together with documentation so the system can
 
 | # | Workflow | File | Trigger | Purpose |
 |---|----------|------|---------|---------|
-| 1 | **Student Registration & Enrollment** | [`01-student-registration-enrollment.json`](workflows/01-student-registration-enrollment.json) | Google Form submit | Validates a new registration, generates a Student ID, records the student, sends a welcome email, and provisions a personal Drive folder |
-| 2 | **Assignment Pipeline** | [`02-assignment-pipeline.json`](workflows/02-assignment-pipeline.json) | Google Form submit | Verifies the student, blocks duplicate submissions, files the submission to Drive, grades it with Gemini (Groq as an auto‑fix fallback), and emails the result |
-| 3 | **Attendance Sheet Updater** | [`03-attendance-sheet-updater.json`](workflows/03-attendance-sheet-updater.json) | Schedule (08:00 daily) / Manual | Seeds a blank attendance row for every student for the current day |
-| 4 | **AttendaceWarn** *(Attendance Warning)* | [`04-attendance-warning.json`](workflows/04-attendance-warning.json) | Schedule (16:00 daily) / Manual | Emails every student marked absent that day |
-| 5 | **CertificationSystem** | [`05-certification-system.json`](workflows/05-certification-system.json) | Manual | Issues a certificate or a "not completed" notice based on assignment score |
+| 1 | **Student Registration & Enrollment** | [`Student Registration & Enrollment.json`](Student%20Registration%20%26%20Enrollment.json) | Google Form submit | Validates a new registration, generates a Student ID, records the student, sends a welcome email, and provisions a personal Drive folder |
+| 2 | **Assignment Pipeline** | [`Assignment PipeLine.json`](Assignment%20PipeLine.json) | Google Form submit | Verifies the student, blocks duplicate submissions, files the submission to Drive, grades it with Gemini (Groq as an auto‑fix fallback), and emails the result |
+| 3 | **Attendance Sheet Updater** | [`Attendance Sheet Updater.json`](Attendance%20Sheet%20Updater.json) | Schedule (08:00 daily) / Manual | Seeds a blank attendance row for every student for the current day |
+| 4 | **AttendaceWarn** *(Attendance Warning)* | [`AttendaceWarn.json`](AttendaceWarn.json) | Schedule (16:00 daily) / Manual | Emails every student marked absent that day |
+| 5 | **CertificationSystem** | [`CertificationSystem.json`](CertificationSystem.json) | Manual | Issues a certificate or a "not completed" notice based on assignment score |
 
 All five workflows share the same n8n project tag (`IITFINALPROJECT`) and the same Google Sheets / Gmail credentials, confirming they're meant to run as one system rather than independently.
 
-Full node‑by‑node breakdowns of each workflow are in **[docs/WORKFLOWS.md](docs/WORKFLOWS.md)**.
+Full node‑by‑node breakdowns of each workflow are in **[WORKFLOWS.md](WORKFLOWS.md)**.
 
 ## Architecture
 
@@ -66,7 +66,7 @@ flowchart TD
     W5 --> MAIL
 ```
 
-This is the condensed view. **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** has the full system diagram, a sequence diagram of the Assignment Pipeline's AI grading branch, and the reasoning behind the data layout.
+This is the condensed view. **[ARCHITECTURE.md](ARCHITECTURE.md)** has the full system diagram, a sequence diagram of the Assignment Pipeline's AI grading branch, and the reasoning behind the data layout.
 
 ## Data layer
 
@@ -92,19 +92,15 @@ A parent **Google Drive** folder holds one sub‑folder per student (created at 
 ## Repository structure
 
 ```
-smart-university-management-platform/
+smart_university_management_n8n/
 ├── README.md
-├── LICENSE
-├── .gitignore
-├── docs/
-│   ├── ARCHITECTURE.md      # Full diagrams + data-layer design notes
-│   └── WORKFLOWS.md         # Node-by-node documentation for all 5 workflows
-└── workflows/
-    ├── 01-student-registration-enrollment.json
-    ├── 02-assignment-pipeline.json
-    ├── 03-attendance-sheet-updater.json
-    ├── 04-attendance-warning.json
-    └── 05-certification-system.json
+├── ARCHITECTURE.md
+├── WORKFLOWS.md
+├── Student Registration & Enrollment.json
+├── Assignment PipeLine.json
+├── Attendance Sheet Updater.json
+├── AttendaceWarn.json
+└── CertificationSystem.json
 ```
 
 ## Getting started
@@ -114,10 +110,10 @@ smart-university-management-platform/
    - *Student Database* → tab `database` with columns: `Student ID, Full Name, Email, Mobile, Course, Registration Date, driveID, assignment 1`
    - *Student Records* → tab `asheet` with columns: `Attendance ID, Date, Student ID, Full Name, Course, email, Attendance`, and a second tab `assignment 1` with columns: `Student ID, Name, Email, Assignment Link, Result Report, Percentage`
    - A parent folder in Google Drive to hold per‑student sub‑folders.
-3. **Import the workflows** — in n8n: *Workflows → Import from File* for each file in `/workflows`, in the numbered order.
-4. **Reconnect credentials** — each node references the original author's credentials by ID, so every Google Sheets / Gmail / Google Drive / Gemini / Groq node will show "credential not found" until you map it to your own (see the credentials table in [docs/WORKFLOWS.md](docs/WORKFLOWS.md)).
+3. **Import the workflows** — in n8n: *Workflows → Import from File* for each workflow JSON in this repository.
+4. **Reconnect credentials** — each node references the original author's credentials by ID, so every Google Sheets / Gmail / Google Drive / Gemini / Groq node will show "credential not found" until you map it to your own (see the credentials table in [WORKFLOWS.md](WORKFLOWS.md)).
 5. **Point at your own sheets** — replace the two spreadsheet IDs and the Drive parent‑folder ID (currently hard‑coded in the nodes) with your own.
-6. **Publish the two Google Forms** (Registration, Assignment Submission) using the field lists in [docs/WORKFLOWS.md](docs/WORKFLOWS.md), and re‑link each `On form submission` trigger.
+6. **Publish the two Google Forms** (Registration, Assignment Submission) using the field lists in [WORKFLOWS.md](WORKFLOWS.md), and re‑link each `On form submission` trigger.
 7. **Fix the Percentage expression bug** before relying on grading or certification — see below.
 8. **Activate** the two scheduled workflows (08:00 and 16:00) and test the rest manually with a dummy student end‑to‑end.
 
@@ -146,7 +142,7 @@ The workflow JSON files contain **real Google Sheet and Drive IDs** (not secrets
 
 ## License
 
-Released under the [MIT License](LICENSE) — adjust as you see fit for your submission/portfolio needs.
+Released under the MIT License — add a `LICENSE` file if you publish this repository.
 
 ---
 

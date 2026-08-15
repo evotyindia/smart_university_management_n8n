@@ -115,7 +115,7 @@ One row per student per assignment, keyed by `Student ID`.
 | `Student ID`, `Name`, `Email` | Assignment Pipeline (initial append) |
 | `Assignment Link` | Assignment Pipeline — Drive link to the raw submission text file |
 | `Result Report` | Assignment Pipeline — Drive link to the AI evaluation report text file |
-| `Percentage` | Assignment Pipeline — from the Gemini/Groq grading step (see [Known Issues](../README.md#known-issues--recommendations) — currently mis‑wired) |
+| `Percentage` | Assignment Pipeline — from the Gemini/Groq grading step (see [Known Issues](README.md#known-issues--recommendations) — currently mis‑wired) |
 
 ### Google Drive
 

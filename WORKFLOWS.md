@@ -1,6 +1,6 @@
 # Workflow Documentation
 
-Node‑by‑node breakdown of all 5 workflows. Sheet/Drive IDs are the ones baked into the source JSON (see [Before you publish](../README.md#before-you-publish-this-repo)).
+Node‑by‑node breakdown of all 5 workflows. Sheet/Drive IDs are the ones baked into the source JSON (see [Before you publish](README.md#before-you-publish-this-repo)).
 
 - **Student Database** spreadsheet: `1FNf6IkEBrZ6oAJ4ZJUf11-9jHeabXoTz2BF3Z9Sr3uc`, tab `database`
 - **Student Records** spreadsheet: `1wdh6ZDeGH_RZCspQRazyUTF-IULlTBXmFviJJBr9_lM`, tabs `asheet` and `assignment 1`
@@ -9,7 +9,7 @@ Node‑by‑node breakdown of all 5 workflows. Sheet/Drive IDs are the ones bake
 
 ## 1. Student Registration & Enrollment
 
-`workflows/01-student-registration-enrollment.json` · internal name `Student Registration & Enrollment`
+`Student Registration & Enrollment.json` · internal name `Student Registration & Enrollment`
 
 **Purpose:** Onboard a new student from a public Google Form — validating there's no existing registration, issuing a Student ID, recording them in the master roster, welcoming them by email, and provisioning a personal Drive folder for future submissions.
 
@@ -40,7 +40,7 @@ Node‑by‑node breakdown of all 5 workflows. Sheet/Drive IDs are the ones bake
 
 ## 2. Assignment Pipeline
 
-`workflows/02-assignment-pipeline.json` · internal name `Assignment PipeLine`
+`Assignment PipeLine.json` · internal name `Assignment PipeLine`
 
 **Purpose:** Accept a Biology assignment submission, verify and de‑duplicate it, file it to Drive, grade it with an LLM against a fixed rubric, and email the result — the most involved workflow in the suite (22 nodes).
 
@@ -64,7 +64,7 @@ Node‑by‑node breakdown of all 5 workflows. Sheet/Drive IDs are the ones bake
 8. **Append or update row in sheet** — appends to *assignment 1*: `Student ID, Name, Email, Assignment Link (Drive webViewLink)`, with `Percentage` and `Result Report` left blank, matched on `Student ID`.
 9. In parallel, **Basic LLM Chain** (Google Gemini, via `Google Gemini Chat Model`, with `Structured Output Parser` enforcing a JSON schema and Groq wired in as the parser's auto‑fix model) grades the 5 answers — see [ARCHITECTURE.md](ARCHITECTURE.md#3-key-flow-assignment-pipeline-with-ai-grading) for the full rubric and schema.
 10. **Basic LLM Chain** output fans out to **Send a message2** *and* **Edit Fields1**:
-    - **Send a message2** — *"Assignment 1 Evaluation Completed – MoonLit University"* email with the marks/feedback per question. ⚠️ *Currently reads the grade via `.output.properties.<field>.type` — see [Known Issues](../README.md#known-issues--recommendations).*
+    - **Send a message2** — *"Assignment 1 Evaluation Completed – MoonLit University"* email with the marks/feedback per question. ⚠️ *Currently reads the grade via `.output.properties.<field>.type` — see [Known Issues](README.md#known-issues--recommendations).*
     - **Edit Fields1** — renders the same result into a formatted evaluation‑report text (`assigmentresult`), same expression issue.
 11. **Convert to File1** → **assignment - report** (Google Drive) — uploads the evaluation report as `assignment 1 - <Student ID> - report`, into the same student folder.
 12. **Append or update row in sheet1** — updates the *assignment 1* row: `Result Report` (Drive link) and `Percentage`, matched on `Student ID`.
@@ -80,7 +80,7 @@ Node‑by‑node breakdown of all 5 workflows. Sheet/Drive IDs are the ones bake
 
 ## 3. Attendance Sheet Updater
 
-`workflows/03-attendance-sheet-updater.json` · internal name `Attendance Sheet Updater`
+`Attendance Sheet Updater.json` · internal name `Attendance Sheet Updater`
 
 **Purpose:** Every morning, make sure each student has an (initially blank) attendance row for the day, so there's something for attendance to be marked against later.
 
@@ -106,7 +106,7 @@ Node‑by‑node breakdown of all 5 workflows. Sheet/Drive IDs are the ones bake
 
 ## 4. AttendaceWarn *(Attendance Warning)*
 
-`workflows/04-attendance-warning.json` · internal name `AttendaceWarn` *(sic — cosmetic typo, missing an "n")*
+`AttendaceWarn.json` · internal name `AttendaceWarn` *(sic — cosmetic typo, missing an "n")*
 
 **Purpose:** At the end of the day, notify every student who was marked absent.
 
@@ -132,7 +132,7 @@ Node‑by‑node breakdown of all 5 workflows. Sheet/Drive IDs are the ones bake
 
 ## 5. CertificationSystem
 
-`workflows/05-certification-system.json` · internal name `CertificationSystem`
+`CertificationSystem.json` · internal name `CertificationSystem`
 
 **Purpose:** Decide pass/fail per graded assignment and send either a certificate or a "not completed" notice.
 
@@ -152,7 +152,7 @@ Node‑by‑node breakdown of all 5 workflows. Sheet/Drive IDs are the ones bake
 **Writes:** none (email only).
 **Credentials:** Google Sheets OAuth2, Gmail OAuth2.
 
-**Note:** see [Known Issues #1–3](../README.md#known-issues--recommendations) — the `Percentage > 0.4` threshold assumes a 0–1 fraction, but the Assignment Pipeline's rubric produces a 0–100 value, and (separately) that value isn't currently being written correctly upstream.
+**Note:** see [Known Issues #1–3](README.md#known-issues--recommendations) — the `Percentage > 0.4` threshold assumes a 0–1 fraction, but the Assignment Pipeline's rubric produces a 0–100 value, and (separately) that value isn't currently being written correctly upstream.
 
 ---
 
@@ -166,4 +166,4 @@ Node‑by‑node breakdown of all 5 workflows. Sheet/Drive IDs are the ones bake
 | Google Gemini (PaLM) API | `googlePalmApi` | Assignment Pipeline (grading) |
 | Groq account | `groqApi` | Assignment Pipeline (structured‑output auto‑fix) |
 
-Every credential is referenced by the original author's internal ID, so each will need to be re‑mapped to your own after import (see [Getting started](../README.md#getting-started) in the README).
+Every credential is referenced by the original author's internal ID, so each will need to be re‑mapped to your own after import (see [Getting started](README.md#getting-started) in the README).
